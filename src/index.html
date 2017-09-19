@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mathmania</title>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+    <script src="//unpkg.com/vue"></script>
+</head>
+<body>
+    <script type="text/x-template" id="appHeader">
+        <div class="panel-heading text-center">
+            {{ title }}
+        </div>
+    </script>
+    <script type="text/x-template" id="appFooter">
+        <div class="panel-footer text-center">
+            {{ credits }}
+        </div>
+    </script>
+    <script type="text/x-template" id="appQuiz">
+        <div style="min-height:200px">
+            <Equation :equation="problem.equation" />
+            <Choices :choices="problem.choices" :correctAnswer="problem.answer" @answer="value => $emit('answer', value)" />
+        </div>
+    </script>
+    <script type="text/x-template" id="appEquation">
+        <h2 class="text-center">{{ equation }}</h2>
+    </script>
+    <script type="text/x-template" id="appChoices">
+        <ul class="list-inline text-center" style="margin-top:50px">
+            <li v-for="choice in choices" :key="choice.value">
+                <button :class="{'btn':true, 'btn-primary':!choice.markIncorrect, 'btn-danger':choice.markIncorrect}" style="outline:0" @click="answer(choice)">{{ choice.value }}</button>
+            </li>
+        </ul>
+    </script>
+    <script type="text/x-template" id="appResults">
+        <div class="text-center" style="min-height:200px">
+            <h2>Results</h2>
+            <p>Total Correct: {{ totalProblems - totalIncorrect }}/{{totalProblems}}</p>
+            <button class="btn btn-primary" style="outline:0;margin-top:50px" @click="$emit('restart')">Restart</button>
+        </div>
+    </script>
+    <script type="text/x-template" id="appContainer">
+        <div id="app" class="panel panel-primary" style="max-width:350px; margin: 100px auto">
+            <Header :title="title" />
+            <div class="panel-body" v-if="!done">
+                <Quiz :problem="problem" @answer="value => answer(value)" :done="done" />
+            </div>
+            <div class="panel-body" v-else>
+                <Results :totalProblems="totalProblems" :totalIncorrect="totalIncorrect" @restart="restart()" />
+            </div>
+            <Footer :credits="credits" />
+        </div>
+    </script>
+    <div id="mathmania"></div>
+    <script src="index.js"></script>
+</body>
+</html>
